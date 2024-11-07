@@ -1,0 +1,215 @@
+{% extends "base/Dashboard/base_dashboard.html" %}
+
+{% block title %}Beta Dashboard{% endblock %}
+
+{% block content %}
+  <div class="max-w-6xl mx-auto">
+    <!-- Card Container -->
+    <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+      <!-- Header -->
+      <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+        <h3 class="text-2xl font-bold text-white">Coding Practice</h3>
+      </div>
+
+      <!-- Form Section -->
+      <div class="p-6 pt-0">
+        <form id="uploadForm" enctype="multipart/form-data" class="space-y-6">
+          {% csrf_token %}
+
+          <!-- Title Input -->
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-gray-700 block">Resource Title</label>
+            <input
+              type="text"
+              name="title"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              required
+              placeholder="Enter resource title"
+            >
+          </div>
+
+          <!-- Topic ID Input -->
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-gray-700 block">Topic ID</label>
+            <input
+              type="text"
+              name="topic_id"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              required
+              placeholder="Enter topic ID"
+            >
+          </div>
+
+          <!-- Two Column Layout -->
+          <div class="grid grid-cols-2 gap-4">
+            <!-- Child Order Input -->
+            <div class="space-y-2">
+              <label class="text-sm font-medium text-gray-700 block">Child Order</label>
+              <input
+                type="number"
+                name="child_order"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                required
+                min="0"
+              >
+            </div>
+
+            <!-- Duration Input -->
+            <div class="space-y-2">
+              <label class="text-sm font-medium text-gray-700 block">Duration (seconds)</label>
+              <input
+                type="number"
+                name="duration"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                required
+                min="0"
+              >
+            </div>
+          </div>
+
+          <!-- File Upload (Standard) -->
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-gray-700 block">Upload Zip File</label>
+            <input
+              type="file"
+              id="file-upload"
+              name="zip_file"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              required
+              accept=".zip"
+            >
+            <p class="text-xs text-gray-500">ZIP file up to 10MB</p>
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+          >
+            Upload and Process
+          </button>
+        </form>
+
+        <!-- Progress Section -->
+        <div id="progressSection" class="mt-8 hidden">
+          <div class="space-y-4">
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+              <div id="progressBar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+
+            <!-- Status Messages -->
+            <div class="space-y-3">
+              <div id="currentStatus" class="flex items-center text-sm font-medium text-gray-700">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Processing...
+              </div>
+              <ul id="progressSteps" class="space-y-2 text-sm text-gray-600"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('uploadForm');
+  console.log("hi");
+  const progressSection = document.getElementById('progressSection');
+  const progressBar = document.getElementById('progressBar');
+  const progressSteps = document.getElementById('progressSteps');
+  const currentStatus = document.getElementById('currentStatus');
+
+  const steps = [
+    "initialize",
+    "rename_json",
+    "upload_s3",
+    "prepare_json",
+    "upload_google_sheet",
+    "load_sheet_request",
+    "check_task_status",
+    "unlock_resource",
+    "save_to_db"
+  ];
+  console.log(steps);
+  async function processStep(step) {
+    const formData = new FormData(form);
+    formData.append('step', step);
+
+    const response = await fetch('{% url "process_step" %}', {
+      method: 'POST',
+      body: formData,
+      headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value }
+    });
+
+    const data = await response.json();
+    if (data.status === "error") {
+      throw new Error(data.message);
+    }
+    return data;
+  }
+
+  async function processSteps() {
+    progressSection.classList.remove('hidden');
+    for (const step of steps) {
+      try {
+        const result = await processStep(step);
+        updateProgress(result.message);
+
+        if (result.complete) {
+          currentStatus.innerHTML = `
+            <svg class="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            Process Completed Successfully!
+          `;
+          progressBar.style.backgroundColor = "green";
+          progressBar.style.width = "100%";
+          break;
+        }
+      } catch (error) {
+        updateProgress(`Error: ${error.message}`, true);
+        currentStatus.innerHTML = `
+          <svg class="h-5 w-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+          Load Failed
+        `;
+        progressBar.style.backgroundColor = "red";
+        break;
+      }
+    }
+  }
+
+  function updateProgress(message, isError = false) {
+    const li = document.createElement('li');
+    li.className = 'flex items-center space-x-2';
+    li.innerHTML = `
+      <svg class="h-5 w-5 ${isError ? 'text-red-500' : 'text-green-500'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${isError ? 'M6 18L18 6M6 6l12 12' : 'M5 13l4 4L19 7'}"/>
+      </svg>
+      <span>${message}</span>
+    `;
+    progressSteps.appendChild(li);
+
+    progressBar.style.width = `${(progressSteps.children.length / steps.length) * 100}%`;
+
+    if (isError) {
+      progressBar.style.backgroundColor = "red";
+    }
+  }
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    processSteps();
+  });
+});
+</script>
+
+
+{% endblock %}

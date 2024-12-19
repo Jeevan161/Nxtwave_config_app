@@ -19,18 +19,18 @@ def home_redirect(request):
 
 
 def access_denied(request):
-    return render(request, 'Beta/access_denied.html')
+    return render(request, 'base/account/access_denied.html')
 
 
 @login_required
 def beta_dashboard(request):
-    return render(request, 'Beta/beta_dashboard.html')
+    return render(request, 'base/Dashboard/beta_dashboard.html')
 
 
 @login_required
 @user_passes_test(is_staff_user, login_url='access_denied')
 def gamma_dashboard(request):
-    return render(request, 'Beta/gamma_dashboard.html')
+    return render(request, 'base/Dashboard/gamma_dashboard.html')
 
 
 def register_view(request):
@@ -45,7 +45,7 @@ def register_view(request):
         user.save()
         messages.success(request, 'Registration successful. Waiting for admin approval.')
         return redirect('login')
-    return render(request, 'Beta/register.html')
+    return render(request, 'base/account/register.html')
 
 
 def login_view(request):
@@ -68,7 +68,7 @@ def login_view(request):
                         return redirect('/')
                 else:
                     # User exists and password is correct, but account is inactive
-                    return render(request, 'Beta/account_not_approved.html')
+                    return render(request, 'base/account/account_not_approved.html')
             else:
                 # Password does not match
                 messages.error(request, 'Invalid credentials')
@@ -77,7 +77,7 @@ def login_view(request):
             # User with the given username does not exist
             messages.error(request, 'Invalid credentials')
 
-    return render(request, 'Beta/login.html')
+    return render(request, 'base/account/login.html')
 
 
 def logout_view(request):
@@ -87,9 +87,9 @@ def logout_view(request):
 
 @login_required
 def content_developer_dashboard(request):
-    return render(request, 'Beta/cd.html')
+    return render(request, 'base/account/cd.html')
 
 
 @login_required
 def configurator_dashboard(request):
-    return render(request, 'Beta/configurator.html')
+    return render(request, 'base/account/configurator.html')

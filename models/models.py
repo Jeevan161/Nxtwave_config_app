@@ -14,6 +14,7 @@ class ResourceLoadData(models.Model):
     unlock_request_id = models.CharField(null=True,max_length=100)
     file_url = models.URLField(max_length=500, null=True, blank=True)
     status = models.CharField(max_length=50)
+    no_question = models.IntegerField()
     resource_type = models.CharField(max_length=50)
     updated_count = models.IntegerField(default=0)
     time_loaded = models.DateTimeField(auto_now_add=True)

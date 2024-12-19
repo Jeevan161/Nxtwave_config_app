@@ -7,7 +7,14 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from models.models import ResourceLoadData
-from models.views import *
+from utils.Beta.rename_zip import rename_json_files_in_zip
+from utils.Beta.aws import set_aws_credentials
+from utils.Beta.sheet_loading import submit_sheet_loading_request
+from utils.Beta.sheet_preparation import upload_to_google_sheets
+from utils.Beta.task_details import get_task_details
+from utils.Beta.unlock_resource import submit_unlock_resource
+from utils.Beta.upload_to_s3 import upload_to_s3
+from utils.Beta.Coding_json_preparation import coding_practice_prepare_json
 
 
 @login_required
@@ -22,17 +29,32 @@ def process_step(request):
     """Processes each step asynchronously based on the `step` parameter from the request."""
     step = request.POST.get('step')
     response_data = {'status': 'success', 'step': step, 'message': ''}
+    print("b06aef89-f861-40a2-80c5-fb0f364caa19")
 
     if step == "initialize":
         request.session['resource_id'] = str(uuid.uuid4())
         response_data['message'] = "Initialized process."
 
+
     elif step == "rename_json":
         zip_file = request.FILES.get('zip_file')
         resource_id = request.session['resource_id']
-        request.session['final_zip_path'] = rename_json_files_in_zip(zip_file, "media/output", resource_id)
-        response_data['message'] = "Renamed JSON files in the zip."
+        output_dir = "media/output"
 
+        # Call the updated rename_json_files_in_zip function
+        result = rename_json_files_in_zip(zip_file, output_dir, resource_id)
+
+        # Check for validation errors
+        if 'errors' in result:
+            response_data['status'] = 'error'
+            response_data['message'] = result['errors']
+            response_data['errors'] = result['errors']  # Include all errors for client-side display
+            return JsonResponse(response_data, status=400)
+
+        # If no errors, store the ZIP path and number of questions in the session
+        request.session['final_zip_path'] = result['zip_path']
+        request.session['no_questions'] = result['total_questions']
+        response_data['message'] = f"Renamed JSON files in the zip. Total questions: {result['total_questions']}."
     elif step == "upload_s3":
         creds = set_aws_credentials()
         s3_file_url = upload_to_s3(cred=creds, file_path=request.session['final_zip_path'])
@@ -61,9 +83,13 @@ def process_step(request):
     elif step == "load_sheet_request":
         final_json = {
             "spread_sheet_name": request.POST.get('title'),
-            "spreadsheet_id" : request.session['spreadsheet_id'],
+
+            "spreadsheet_id": request.session['spreadsheet_id'],
+
             "data_sets_to_be_loaded": ["ResourcesData", "Units", "QuestionSet"],
+
             "question_set_questions_dir_path_url": request.session['s3_file_url'],
+
             "is_json_converted": False
         }
         sheet_loading_request_id = submit_sheet_loading_request(final_json)
@@ -73,7 +99,7 @@ def process_step(request):
     elif step == "check_task_status":
         task_status, exception_url = get_task_details(request.session['sheet_loading_request_id'])
         if task_status != "SUCCESS":
-            return JsonResponse({'status': 'error', 'message': 'Task failed.'}, status=500)
+            return JsonResponse({'status': 'error', 'message':exception_url }, status=400)
         response_data['message'] = "Sheet loading task completed."
 
     elif step == "unlock_resource":
@@ -107,6 +133,7 @@ def process_step(request):
             sheet_loading_request_id=sheet_loading_request_id,
             unlock_request_id=unlock_request_id,
             file_url=s3_file_url,
+            no_question = request.session['no_questions'],
             status="Completed" if unlock_request_id else "Failed",
             resource_type="CODING PRACTICE",
             updated_count=0,

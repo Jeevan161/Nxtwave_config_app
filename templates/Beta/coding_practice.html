@@ -1,113 +1,205 @@
-{% extends "base/Dashboard/base_dashboard.html" %}
+  {% extends "base/Dashboard/base_dashboard.html" %}
 
-{% block title %}Beta Dashboard{% endblock %}
+  {% block title %}Beta Dashboard{% endblock %}
 
-{% block content %}
-  <div class="max-w-6xl mx-auto">
-    <!-- Card Container -->
-    <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-      <!-- Header -->
-      <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
-        <h3 class="text-2xl font-bold text-white">Coding Practice</h3>
+  {% block content %}
+  <div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+      <!-- Header Section -->
+      <div class="mb-8 text-center">
+        <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+          Coding Practice
+        </h1>
+  <!--      <p class="mt-3 text-lg text-gray-500">-->
+  <!--        Upload and process your coding practice resources-->
+  <!--      </p>-->
       </div>
 
-      <!-- Form Section -->
-      <div class="p-6 pt-0">
-        <form id="uploadForm" enctype="multipart/form-data" class="space-y-6">
-          {% csrf_token %}
-
-          <!-- Title Input -->
-          <div class="space-y-2">
-            <label class="text-sm font-medium text-gray-700 block">Resource Title</label>
-            <input
-              type="text"
-              name="title"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-              required
-              placeholder="Enter resource title"
-            >
+      <!-- Main Card -->
+      <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+        <!-- Progress Steps -->
+        <div class="px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+              <span class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 text-white">
+                1
+              </span>
+              <span class="text-white font-medium">Details</span>
+            </div>
+            <div class="flex-1 mx-4 h-0.5 bg-blue-400"></div>
+            <div class="flex items-center space-x-2">
+              <span class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 text-white">
+                2
+              </span>
+              <span class="text-white font-medium">Upload</span>
+            </div>
+            <div class="flex-1 mx-4 h-0.5 bg-blue-400"></div>
+            <div class="flex items-center space-x-2">
+              <span class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 text-white">
+                3
+              </span>
+              <span class="text-white font-medium">Process</span>
+            </div>
           </div>
+        </div>
 
-          <!-- Topic ID Input -->
-          <div class="space-y-2">
-            <label class="text-sm font-medium text-gray-700 block">Topic ID</label>
-            <input
-              type="text"
-              name="topic_id"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-              required
-              placeholder="Enter topic ID"
-            >
-          </div>
+        <!-- Form Section -->
+        <div class="p-8">
+          <form id="uploadForm" enctype="multipart/form-data" class="space-y-8">
+            {% csrf_token %}
 
-          <!-- Two Column Layout -->
-          <div class="grid grid-cols-2 gap-4">
-            <!-- Child Order Input -->
-            <div class="space-y-2">
-              <label class="text-sm font-medium text-gray-700 block">Child Order</label>
-              <input
-                type="number"
-                name="child_order"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                required
-                min="0"
+            <!-- Resource Details Section -->
+            <div class="space-y-6">
+              <h3 class="text-lg font-semibold text-gray-900 border-b pb-2">Resource Details</h3>
+
+              <div class="grid grid-cols-1 gap-6">
+                <!-- Title Input -->
+                <div class="space-y-2">
+                  <label class="text-sm font-medium text-gray-700 flex items-center">
+                    Resource Title
+                    <span class="ml-1 text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="title"
+                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm"
+                    required
+                    placeholder="Enter a descriptive title for your resource"
+                  >
+                </div>
+
+                <!-- Topic ID Input -->
+                <div class="space-y-2">
+                  <label class="text-sm font-medium text-gray-700 flex items-center">
+                    Topic ID
+                    <span class="ml-1 text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="topic_id"
+                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm"
+                    required
+                    placeholder="Enter the unique topic identifier"
+                  >
+                </div>
+
+                <!-- Two Column Layout -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <!-- Child Order Input -->
+                  <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-700 flex items-center">
+                      Child Order
+                      <span class="ml-1 text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      name="child_order"
+                      class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm"
+                      required
+                      min="0"
+                      placeholder="0"
+                    >
+                  </div>
+
+                  <!-- Duration Input -->
+                  <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-700 flex items-center">
+                      Duration (seconds)
+                      <span class="ml-1 text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      name="duration"
+                      class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm"
+                      required
+                      min="0"
+                      placeholder="60"
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- File Upload Section -->
+            <div class="space-y-6">
+              <h3 class="text-lg font-semibold text-gray-900 border-b pb-2">Resource File</h3>
+
+              <div class="space-y-4">
+                <div class="relative border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-500 transition-colors">
+                  <input
+                    type="file"
+                    id="file-upload"
+                    name="zip_file"
+                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    required
+                    accept=".zip"
+                  >
+                  <div class="text-center">
+  <!--                  <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">-->
+  <!--                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />-->
+  <!--                  </svg>-->
+                    <div class="mt-4 flex text-sm text-gray-600">
+                      <span class="relative rounded-md text-center font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                        Upload a file
+                      </span>
+                      <p class="pl-1">or drag and drop</p>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">ZIP file up to 10MB</p>
+                  </div>
+                </div>
+                <div id="file-name" class="text-sm text-gray-500"></div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-4">
+              <button
+                type="submit"
+                class="w-full flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm"
               >
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                </svg>
+                Upload and Process
+              </button>
             </div>
+          </form>
 
-            <!-- Duration Input -->
-            <div class="space-y-2">
-              <label class="text-sm font-medium text-gray-700 block">Duration (seconds)</label>
-              <input
-                type="number"
-                name="duration"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                required
-                min="0"
-              >
-            </div>
-          </div>
-
-          <!-- File Upload (Standard) -->
-          <div class="space-y-2">
-            <label class="text-sm font-medium text-gray-700 block">Upload Zip File</label>
-            <input
-              type="file"
-              id="file-upload"
-              name="zip_file"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-              required
-              accept=".zip"
-            >
-            <p class="text-xs text-gray-500">ZIP file up to 10MB</p>
-          </div>
-
-          <!-- Submit Button -->
-          <button
-            type="submit"
-            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-          >
-            Upload and Process
-          </button>
-        </form>
-
-        <!-- Progress Section -->
-        <div id="progressSection" class="mt-8 hidden">
-          <div class="space-y-4">
-            <!-- Progress Bar -->
-            <div class="w-full bg-gray-200 rounded-full h-2.5">
-              <div id="progressBar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
-            </div>
-
-            <!-- Status Messages -->
-            <div class="space-y-3">
-              <div id="currentStatus" class="flex items-center text-sm font-medium text-gray-700">
+          <!-- Progress Section -->
+          <div id="progressSection" class="mt-8 hidden">
+            <div class="space-y-6">
+              <!-- Current Status -->
+              <div id="currentStatus" class="flex items-center justify-center p-4 bg-blue-50 rounded-lg">
                 <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Processing...
+                <span class="text-sm font-medium text-blue-700">Processing your resource...</span>
               </div>
-              <ul id="progressSteps" class="space-y-2 text-sm text-gray-600"></ul>
+
+              <!-- Progress Bar -->
+              <div class="relative pt-1">
+                <div class="flex mb-2 items-center justify-between">
+                  <div>
+                    <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200">
+                      Progress
+                    </span>
+                  </div>
+                  <div class="text-right">
+                    <span id="progressPercentage" class="text-xs font-semibold inline-block text-blue-600">
+                      0%
+                    </span>
+                  </div>
+                </div>
+                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded-full bg-blue-100">
+                  <div id="progressBar" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-600 transition-all duration-500" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <!-- Progress Steps -->
+              <div class="bg-white rounded-lg border border-gray-200">
+                <ul id="progressSteps" class="divide-y divide-gray-200"></ul>
+              </div>
             </div>
           </div>
         </div>
@@ -115,101 +207,138 @@
     </div>
   </div>
 
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('uploadForm');
+    const progressSection = document.getElementById('progressSection');
+    const progressBar = document.getElementById('progressBar');
+    const progressPercentage = document.getElementById('progressPercentage');
+    const progressSteps = document.getElementById('progressSteps');
+    const currentStatus = document.getElementById('currentStatus');
+    const fileUpload = document.getElementById('file-upload');
+    const fileName = document.getElementById('file-name');
+    const uploadButton = document.querySelector('button[type="submit"]');
+    const steps = [
+      "initialize",
+      "rename_json",
+      "upload_s3",
+      "prepare_json",
+      "upload_google_sheet",
+      "load_sheet_request",
+      "check_task_status",
+      "unlock_resource",
+      "save_to_db"
+    ];
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const form = document.getElementById('uploadForm');
-  console.log("hi");
-  const progressSection = document.getElementById('progressSection');
-  const progressBar = document.getElementById('progressBar');
-  const progressSteps = document.getElementById('progressSteps');
-  const currentStatus = document.getElementById('currentStatus');
-
-  const steps = [
-    "initialize",
-    "rename_json",
-    "upload_s3",
-    "prepare_json",
-    "upload_google_sheet",
-    "load_sheet_request",
-    "check_task_status",
-    "unlock_resource",
-    "save_to_db"
-  ];
-  console.log(steps);
-  async function processStep(step) {
-    const formData = new FormData(form);
-    formData.append('step', step);
-
-    const response = await fetch('{% url "process_step" %}', {
-      method: 'POST',
-      body: formData,
-      headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value }
+    // File upload preview
+    fileUpload.addEventListener('change', function(e) {
+      if (this.files && this.files[0]) {
+        fileName.textContent = `Selected file: ${this.files[0].name}`;
+      }
     });
 
-    const data = await response.json();
-    if (data.status === "error") {
-      throw new Error(data.message);
+    async function processStep(step) {
+      const formData = new FormData(form);
+      formData.append('step', step);
+
+      const response = await fetch('{% url "process_step" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+      });
+
+      const data = await response.json();
+      if (data.status === "error") {
+        throw new Error(data.message);
+      }
+      return data;
     }
-    return data;
-  }
 
-  async function processSteps() {
-    progressSection.classList.remove('hidden');
-    for (const step of steps) {
-      try {
-        const result = await processStep(step);
-        updateProgress(result.message);
+    async function processSteps() {
+      progressSection.classList.remove('hidden');
+      let completedSteps = 0;
 
-        if (result.complete) {
-          currentStatus.innerHTML = `
-            <svg class="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-            </svg>
-            Process Completed Successfully!
-          `;
-          progressBar.style.backgroundColor = "green";
-          progressBar.style.width = "100%";
+      for (const step of steps) {
+        try {
+          const result = await processStep(step);
+          completedSteps++;
+          updateProgress(result.message, completedSteps);
+
+          if (result.complete) {
+            showSuccess();
+            break;
+          }
+        } catch (error) {
+        console.log(error)
+          showError(error.message);
           break;
         }
-      } catch (error) {
-        updateProgress(`Error: ${error.message}`, true);
-        currentStatus.innerHTML = `
+      }
+    }
+
+    function updateProgress(message, completedSteps) {
+      const progress = (completedSteps / steps.length) * 100;
+      progressBar.style.width = `${progress}%`;
+      progressPercentage.textContent = `${Math.round(progress)}%`;
+
+      const li = document.createElement('li');
+      li.className = 'p-4 flex items-center space-x-3';
+      li.innerHTML = `
+        <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        <span class="text-sm text-gray-700">${message}</span>
+      `;
+      progressSteps.appendChild(li);
+    }
+
+    function showSuccess() {
+      currentStatus.innerHTML = `
+        <div class="flex items-center justify-center text-green-700">
+          <svg class="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+          Process Completed Successfully!
+        </div>
+      `;
+      currentStatus.className = 'flex items-center justify-center p-4 bg-green-50 rounded-lg';
+      progressBar.classList.remove('bg-blue-600');
+      progressBar.classList.add('bg-green-600');
+    }
+
+    function showError(message) {
+      currentStatus.innerHTML = `
+        <div class="flex items-center justify-center text-red-700">
           <svg class="h-5 w-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
           </svg>
-          Load Failed
-        `;
-        progressBar.style.backgroundColor = "red";
-        break;
-      }
+          Error: ${message}
+        </div>
+      `;
+      currentStatus.className = 'flex items-center justify-center p-4 bg-red-50 rounded-lg';
+      progressBar.classList.remove('bg-blue-600');
+      progressBar.classList.add('bg-red-600');
     }
-  }
 
-  function updateProgress(message, isError = false) {
-    const li = document.createElement('li');
-    li.className = 'flex items-center space-x-2';
-    li.innerHTML = `
-      <svg class="h-5 w-5 ${isError ? 'text-red-500' : 'text-green-500'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${isError ? 'M6 18L18 6M6 6l12 12' : 'M5 13l4 4L19 7'}"/>
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      uploadButton.disabled = true;
+
+    // Clear previous progress and error states
+    progressBar.style.width = "0%";
+    progressPercentage.textContent = "0%";
+    progressSteps.innerHTML = "";
+    currentStatus.className = "flex items-center justify-center p-4 bg-blue-50 rounded-lg";
+    currentStatus.innerHTML = `
+      <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
       </svg>
-      <span>${message}</span>
-    `;
-    progressSteps.appendChild(li);
-
-    progressBar.style.width = `${(progressSteps.children.length / steps.length) * 100}%`;
-
-    if (isError) {
-      progressBar.style.backgroundColor = "red";
-    }
-  }
-
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    processSteps();
+      <span class="text-sm font-medium text-blue-700">Processing your resource...</span>`;
+      processSteps();
+    });
   });
-});
-</script>
-
-
-{% endblock %}
+  </script>
+  {% endblock %}

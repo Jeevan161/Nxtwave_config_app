@@ -16,7 +16,7 @@ def start_session_and_login():
     # Login credentials and CSRF token
     login_data = {
         'username': 'vishal.yadav',
-        'password': '5zIatDvalC',
+        'password': 'z2VNwPj14z',
         'csrfmiddlewaretoken': csrf_token
     }
 

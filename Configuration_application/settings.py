@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-=pezya(c5b3$l0@s0xd1y@c#3biyryssu^pw27wg=el$(3!-tv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -75,18 +75,23 @@ WSGI_APPLICATION = 'Configuration_application.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'nxt_config',
+#         'USER': 'root',
+#         'PASSWORD': 'Jeevan0917',
+#         'HOST': 'configapp.c1ayu68ccax5.us-east-1.rds.amazonaws.com',   # Or an IP Address that your DB is hosted on
+#         'PORT': '3306',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'nxt_config',
-        'USER': 'root',
-        'PASSWORD': 'Jeevan0917',
-        'HOST': 'configapp.c1ayu68ccax5.us-east-1.rds.amazonaws.com',   # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 

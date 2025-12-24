@@ -122,6 +122,7 @@ def mcq_process_step(request):
         spreadsheet_name = f"{title} - {resource_id}"
         spreadsheet_id = request.session['spreadsheet_id']
         sheet_loading_request_id = request.session['sheet_loading_request_id']
+
         unlock_request_id = request.session.get('unlock_request_id')
         s3_file_url = request.session['s3_file_url']
         processing_duration = time.time() - request.session.get('start_time', time.time())
@@ -137,6 +138,7 @@ def mcq_process_step(request):
             spreadsheet_id=spreadsheet_id,
             sheet_loading_request_id=sheet_loading_request_id,
             unlock_request_id=unlock_request_id,
+            no_questions=int(request.session['no_questions']),
             file_url=s3_file_url,
             status="Completed" if unlock_request_id else "Failed",
             resource_type="MCQ PRACTICE",
